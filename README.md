@@ -8,14 +8,6 @@ A personal technology news desk for students and developers — built with **Flu
 ![Supabase](https://img.shields.io/badge/Supabase-3FCF8E?style=flat&logo=supabase&logoColor=white)
 ![Render](https://img.shields.io/badge/Deployed%20on-Render-46E3B7?style=flat&logo=render&logoColor=white)
 
-🔗 **Live Demo:** [your-demo-link-here](#)
-
----
-
-## 🎥 Demo
-
-<!-- Replace with your actual video link, or an embedded GIF -->
-[![Watch the demo](docs/screenshots/thumbnail.png)](https://your-video-link-here)
 
 ## 📸 Screenshots
 

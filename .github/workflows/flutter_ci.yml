@@ -1,0 +1,59 @@
+name: Flutter CI & Automated Tests
+
+on:
+  push:
+    branches: [ main, master, qa-test-automation ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+    inputs:
+      run_coverage:
+        description: 'Generate test coverage report'
+        required: false
+        default: true
+        type: boolean
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Run Unit & Widget Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.29.0'
+          channel: 'stable'
+          cache: true
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:"
+          cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:"
+
+      - name: Verify Flutter & Dart Installation
+        run: |
+          flutter --version
+          dart --version
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Verify Code Formatting & Static Analysis
+        run: flutter analyze --no-fatal-infos
+
+      - name: Execute Automated Test Suite (Unit & Widget)
+        run: flutter test --coverage
+
+      - name: Upload Test Coverage Report
+        if: ${{ inputs.run_coverage != false }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: lcov-coverage-report
+          path: coverage/lcov.info
+          if-no-files-found: ignore
+          retention-days: 14

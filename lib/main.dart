@@ -7,9 +7,6 @@ import 'package:daily_tech_desk/features/menu/presentation/cubit/saved_articles_
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:daily_tech_desk/features/menu/presentation/cubit/saved_articles_cubit.dart';
-import 'package:daily_tech_desk/features/menu/presentation/cubit/saved_articles_state.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

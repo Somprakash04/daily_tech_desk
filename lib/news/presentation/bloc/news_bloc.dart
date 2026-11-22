@@ -1,6 +1,6 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../features/home/presentation/cubit/news_state.dart';
 import '../../data/models/article_model.dart';
 import '../../domain/repositories/news_repository.dart';
 

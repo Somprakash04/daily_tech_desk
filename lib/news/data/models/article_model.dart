@@ -50,4 +50,15 @@ class ArticleModel {
           : null,
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ArticleModel &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          title == other.title;
+
+  @override
+  int get hashCode => id.hashCode ^ title.hashCode;
 }

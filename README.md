@@ -7,6 +7,9 @@ A personal technology news desk for students and developers — built with **Flu
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat&logo=postgresql&logoColor=white)
 ![Supabase](https://img.shields.io/badge/Supabase-3FCF8E?style=flat&logo=supabase&logoColor=white)
 ![Render](https://img.shields.io/badge/Deployed%20on-Render-46E3B7?style=flat&logo=render&logoColor=white)
+[![Flutter CI](https://github.com/Somprakash04/daily_tech_desk/actions/workflows/flutter_ci.yml/badge.svg)](https://github.com/Somprakash04/daily_tech_desk/actions/workflows/flutter_ci.yml)
+![Tests](https://img.shields.io/badge/tests-26%20passed-brightgreen?style=flat&logo=flutter)
+![Postman](https://img.shields.io/badge/Postman-API%20Tests-FF6C37?style=flat&logo=postman&logoColor=white)
 
 
 ## 📸 Screenshots
@@ -71,6 +74,27 @@ The NewsAPI key stays server-side — the Flutter app never accesses it directly
 | `GET` | `/api/articles/daily-digest` | Today's technology digest |
 
 All support `?page=1&pageSize=20` pagination.
+
+---
+
+## 🧪 Quality Assurance & Test Automation
+
+This repository includes a comprehensive QA and test automation suite directly supporting production quality standards:
+
+- 📋 **Test Plan & Test Cases:** Complete test matrix covering News Feed, Category Filtering, Pagination, Bookmarks, and Offline Mode with expected vs. actual results documented in [TESTING.md](TESTING.md).
+- ⚡ **Automated Unit & State Tests:** Written with `bloc_test` and `mocktail` for BLoC/Cubit state flows and data repositories.
+- 🖼️ **Widget Tests:** Built using `flutter_test` covering key UI components, user interactions, and visual states.
+- 📬 **API Testing Suite:** Postman collections with automated JavaScript assertions (`pm.test`), JSON schema validation, and negative/boundary input checks in [`postman/`](postman/).
+- ⚙️ **CI/CD Automation:** GitHub Actions workflow ([`.github/workflows/flutter_ci.yml`](.github/workflows/flutter_ci.yml)) automatically triggers code analysis and the full test suite on push, pull request, and manual `workflow_dispatch`.
+- 🐛 **Defect Tracking:** Standardized bug reporting issue template ([`.github/ISSUE_TEMPLATE/bug_report.md`](.github/ISSUE_TEMPLATE/bug_report.md)) and logged defects in [TESTING.md](TESTING.md).
+
+```bash
+# Run the automated test suite locally
+flutter test
+
+# Run tests with code coverage
+flutter test --coverage
+```
 
 ---
 

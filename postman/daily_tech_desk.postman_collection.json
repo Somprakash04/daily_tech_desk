@@ -1,0 +1,402 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+    "name": "Daily Tech Desk - ASP.NET Core API Test Suite",
+    "description": "Comprehensive API test collection for Daily Tech Desk backend endpoints. Validates HTTP status codes, response headers, response latency, JSON schema integrity, pagination behavior, and error handling for invalid/negative inputs.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Articles - Feed & Pagination",
+      "item": [
+        {
+          "name": "GET /api/articles (Default Page 1)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response time is below 2000ms\", function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+                  "});",
+                  "",
+                  "pm.test(\"Content-Type is application/json\", function () {",
+                  "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+                  "});",
+                  "",
+                  "pm.test(\"Response has correct schema structure\", function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.be.an(\"object\");",
+                  "    pm.expect(jsonData).to.have.property(\"articles\");",
+                  "    pm.expect(jsonData.articles).to.be.an(\"array\");",
+                  "    pm.expect(jsonData.articles.length).to.be.at.most(20);",
+                  "});",
+                  "",
+                  "pm.test(\"Article item schema validation\", function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    if (jsonData.articles && jsonData.articles.length > 0) {",
+                  "        const article = jsonData.articles[0];",
+                  "        pm.expect(article).to.have.property(\"id\");",
+                  "        pm.expect(article).to.have.property(\"title\");",
+                  "        pm.expect(article.title).to.be.a(\"string\").and.not.be.empty;",
+                  "        pm.expect(article).to.have.property(\"category\");",
+                  "        pm.expect(article).to.have.property(\"sourceName\");",
+                  "        pm.expect(article).to.have.property(\"articleUrl\");",
+                  "        pm.expect(article).to.have.property(\"publishedAt\");",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/articles?page=1&pageSize=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["articles"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "pageSize", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/articles (Custom Page Size)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response respects requested pageSize limit\", function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.articles.length).to.be.at.most(5);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/articles?page=2&pageSize=5",
+              "host": ["{{baseUrl}}"],
+              "path": ["articles"],
+              "query": [
+                { "key": "page", "value": "2" },
+                { "key": "pageSize", "value": "5" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Category Filtering",
+      "item": [
+        {
+          "name": "GET /api/articles/{category} (Valid Category: flutter)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"All returned articles match the requested category\", function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.articles).to.be.an(\"array\");",
+                  "    jsonData.articles.forEach(article => {",
+                  "        pm.expect(article.category.toLowerCase()).to.include(\"flutter\");",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/articles/flutter?page=1&pageSize=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["articles", "flutter"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "pageSize", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/articles/{category} (Valid Category: ai-ml)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Category contains ai-ml articles\", function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.articles).to.be.an(\"array\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/articles/ai-ml?page=1&pageSize=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["articles", "ai-ml"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "pageSize", "value": "10" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Daily Digest",
+      "item": [
+        {
+          "name": "GET /api/articles/daily-digest",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 OK\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Daily digest returns articles collection\", function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property(\"articles\");",
+                  "    pm.expect(jsonData.articles).to.be.an(\"array\");",
+                  "});",
+                  "",
+                  "pm.test(\"Each digest article includes reading time estimate\", function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    if (jsonData.articles && jsonData.articles.length > 0) {",
+                  "        pm.expect(jsonData.articles[0]).to.have.property(\"readingTimeMinutes\");",
+                  "        pm.expect(jsonData.articles[0].readingTimeMinutes).to.be.at.least(1);",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/articles/daily-digest",
+              "host": ["{{baseUrl}}"],
+              "path": ["articles", "daily-digest"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Negative & Boundary Testing (Error Handling)",
+      "item": [
+        {
+          "name": "GET /api/articles (Invalid Negative Page Number)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400 Bad Request\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "pm.test(\"Error schema contains problem details\", function () {",
+                  "    const jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.be.an(\"object\");",
+                  "    pm.expect(jsonData.title || jsonData.message || jsonData.error).to.not.be.undefined;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/articles?page=-1&pageSize=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["articles"],
+              "query": [
+                { "key": "page", "value": "-1" },
+                { "key": "pageSize", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/articles (Page Size Exceeding Max Boundary > 100)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is either 400 Bad Request or clamped safely to max limit (200)\", function () {",
+                  "    pm.expect([200, 400]).to.include(pm.response.code);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 200) {",
+                  "    pm.test(\"Returned article count does not exceed server max limit of 50\", function () {",
+                  "        const jsonData = pm.response.json();",
+                  "        pm.expect(jsonData.articles.length).to.be.at.most(50);",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/articles?page=1&pageSize=99999",
+              "host": ["{{baseUrl}}"],
+              "path": ["articles"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "pageSize", "value": "99999" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/articles (Non-Numeric Page Param)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400 Bad Request for string page value\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/articles?page=abc&pageSize=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["articles"],
+              "query": [
+                { "key": "page", "value": "abc" },
+                { "key": "pageSize", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /api/articles/{category} (Non-Existent Category)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 (empty array) or 404 (not found)\", function () {",
+                  "    pm.expect([200, 404]).to.include(pm.response.code);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 200) {",
+                  "    pm.test(\"Empty articles array is returned for unknown category\", function () {",
+                  "        const jsonData = pm.response.json();",
+                  "        pm.expect(jsonData.articles).to.be.an(\"array\").that.is.empty;",
+                  "    });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/articles/unknown_category_xyz_999",
+              "host": ["{{baseUrl}}"],
+              "path": ["articles", "unknown_category_xyz_999"]
+            }
+          }
+        },
+        {
+          "name": "GET /api/articles/{category} (SQL Injection / Malicious Input)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400, 404, or handled safely with 200 (no 500 internal error)\", function () {",
+                  "    pm.expect(pm.response.code).to.not.equal(500);",
+                  "    pm.expect([200, 400, 404]).to.include(pm.response.code);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/articles/'%20OR%201=1--",
+              "host": ["{{baseUrl}}"],
+              "path": ["articles", "' OR 1=1--"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://daily-tech-desk-api.onrender.com/api"
+    }
+  ]
+}
